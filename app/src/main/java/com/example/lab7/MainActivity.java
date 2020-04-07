@@ -6,6 +6,9 @@ import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -36,16 +39,30 @@ public class MainActivity extends AppCompatActivity {
         btnChannel1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent activityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, activityIntent, 0);
+
+
+                Intent broadcastIntent = new Intent(getApplicationContext(), NotificationReciever.class);
+                broadcastIntent.putExtra("msg", txtMessage.getText().toString());
+                PendingIntent actionIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
                 Notification notification = new NotificationCompat.Builder(MainActivity.this, CHANNEL_1)
 
                         .setSmallIcon(R.drawable.ic_warning_red_24dp)
-
                         .setContentTitle(txtTitle.getText())
-
                         .setContentText(txtMessage.getText())
-
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setCategory(NotificationCompat.CATEGORY_MESSAGE).build();
+                        .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                        .setColor(Color.BLUE)
+                .setContentIntent(contentIntent)
+                        .setAutoCancel(true)
+                        .setOnlyAlertOnce(true)
+                .addAction(R.mipmap.ic_launcher, "Toast", actionIntent)
+                        .build();
+
+
 
                 notificationManager.notify(1, notification);
 
@@ -55,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
          btnChannel2.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
+
+
+
 
                  Notification notification = new NotificationCompat.Builder(MainActivity.this, CHANNEL_2)
 
